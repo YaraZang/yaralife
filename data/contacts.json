@@ -1,0 +1,22 @@
+{
+  "contacts":[
+    {
+      "name":"Yanjun Zang",
+      "id": "012419394",
+      "email": "yanjun.zang@sjsu.edu",
+      "position": "Founder"
+    },
+    {
+      "name":"Tom Smith",
+      "id": "000000001",
+      "email": "tom.smith@sjsu.edu",
+      "position": "Engineer"
+    },
+    {
+      "name":"Jane Toe",
+      "id": "000000002",
+      "email": "jane.toe@sjsu.edu",
+      "position": "Engineer"
+    }
+  ]
+}
