@@ -208,10 +208,10 @@ function getMarket()
             $rate = number_format($product['rate'], 1);
             echo '<div class="card" style="width: 16rem;">
                 <a href="'.config('root').'index.php?page=market_detail&product='.$product['product_id'].'">
-                <img class="card-img-top" src='.$product['src'].' alt='.$product['alt'].'>
+                <img style="height: 220px; width: 100%; display: block;" class="card-img-top" src='.$product['src'].' alt='.$product['alt'].'>
                 </a>
                 <div class="card-body">
-                <h5 class="card-title">'.$product['name'].'</h5>
+                <h6 class="card-title">'.$product['name'].'</h6>
 
                 <p class="card-text">Rating:'."$rate".'</p>
                 <div class="rating">
@@ -317,6 +317,17 @@ function getMarketProductDetail()
               </div>';
     }
 
+    function getHiddenInfo()
+    {
+        if (!isset($_GET['product'])) {
+            return;
+        }
+        $productID = $_GET['product'];
+        echo '
+        <input type="hidden" name="product_id" value="'.$productID.'" />
+      ';
+    }
+
 
     $comments = getCommentListByProductID($productID);
     if ($comments) {
@@ -330,7 +341,7 @@ function getMarketProductDetail()
               echo $comment['rate'];
               echo $comment['comment'];
             */
-            $seconds_ago = (time() - strtotime($comment['timestamp']));
+            $seconds_ago = (time() - $comment['timestamp']);
             if ($seconds_ago >= 31536000) {
                 $caltime = intval($seconds_ago / 31536000) . " years ago";
             } elseif ($seconds_ago >= 2419200) {
@@ -350,7 +361,7 @@ function getMarketProductDetail()
   						<div class="col-sm-3">
   							<img src="https://bootdey.com/img/Content/user_3.jpg" class="img-rounded">
   							<div class="review-block-name"><a href="#">'.$comment['first_name'].'&nbsp;'.$comment['last_name'].'</a></div>
-  							<div class="review-block-date">'.$comment['timestamp'].'<br/>'.$caltime.'</div>
+  							<div class="review-block-date">'.$caltime.'</div>
   						</div>
   						<div class="col-sm-9">
                 <div class="rating">

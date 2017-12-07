@@ -8,6 +8,8 @@ function getCompanies()
     return _getDBResult($statement);
 }
 
+
+
 function getProductsByCompanyID($companyID)
 {
     $statement = '
