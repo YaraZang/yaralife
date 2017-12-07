@@ -35,7 +35,8 @@ function getCommentListByProductID($productID)
            comment.rate,
            comment.comment
            FROM comment join users on comment.user_id = users.id
-    where comment.product_id = '."$productID" ;
+    where comment.product_id = '."$productID".'
+    ORDER BY comment.timestamp DESC LIMIT 6' ;
     return _getDBResult($statement);
 }
 

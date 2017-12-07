@@ -1,7 +1,7 @@
 <?php
 $dbServername = "localhost";
 $dbUsername = "root";
-$dbPassword = "";
+$dbPassword = "4664";
 $dbName = "marketplace";
 
 $conn = mysqli_connect($dbServername, $dbUsername, $dbPassword, $dbName);

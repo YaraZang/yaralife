@@ -226,7 +226,7 @@ function getMarket()
 
             echo '
                 </div>
-                <h5>'.$product['price'].'</h5>
+                <h5 style="color:red;">'.$product['price'].'</h5>
                 <a href="#" class="btn btn-primary">Add to Cart</a>
               </div>
             </div></a>';
@@ -290,16 +290,19 @@ function getMarketProductDetail()
     $product = getProductInfo($productID);
     if ($product) {
         $item = $product[0];
+        $rate = number_format($item['rate'], 1);
         echo '
-                <div class="container" style="width: 200%">
-                <div class="row">
-                <div class="col-sm-8">
-                  <img class="rounded featurette-image img-fluid mx-auto" data-src="holder.js/500x500/auto" alt="500x500" src="'.config('root').$item["src"].'" data-holder-rendered="true" style="width: 450px; height: 450px;">
+              <div class="row">
+                <div class="col-sm-5 offset-sm-2">
+                  <img class="img-thumbnail rounded featurette-image img-fluid mx-auto" data-src="holder.js/500x500/auto" alt="500x500" src="'.config('root').$item["src"].'" data-holder-rendered="true" style="width: 450px; height: 450px; margin:0px auto; display:block;">
                 </div>
-                <div class="col-sm-4">
-                <p class="lead">'.$item["name"].'<br>'.$item["company_id"].'</p>
-                <h1 class="featurette-heading">'.$item["description"].'</h1><br><span class="text-muted">
-                <h4>Your Price&emsp;&emsp;&emsp;'.$item["price"].'</h4></span>
+                <div class="col-sm-5" style="margin:20px auto;">
+                <div class="col-sm-6" style="text-align: center;">
+                <p class="lead" style="color:black; font-size:50px; font-family:Arimo, sans-serif;">'.$item["name"].'</p>
+                <p style="font-size:20px; font-family:Spectral SC, sans-serif;">Company: '.$item["company_id"].'</p>
+
+                <span class="text-muted" style="font-size:30px;">Your Price:&nbsp;<span style="color:red;">'.$item["price"].'</span></span>
+                <span>Rating: '."$rate".'</span>
                 <div class="rating">
                 ';
         for ($i = 0; $i < 5; $i++) {
@@ -312,9 +315,12 @@ function getMarketProductDetail()
 
         echo '
                 </div>
+                <br>
+                <button type="submit" style="float: center; margin: 100px auto;" name="commentsubmit" class="btn btn-primary">Add to Cart</button>
                 </div>
-              </div>
-              </div>';
+
+                </div>
+                </div>';
     }
 
     function getHiddenInfo()
@@ -325,13 +331,14 @@ function getMarketProductDetail()
         $productID = $_GET['product'];
         echo '
         <input type="hidden" name="product_id" value="'.$productID.'" />
+
       ';
     }
 
 
     $comments = getCommentListByProductID($productID);
     if ($comments) {
-        echo '<section id="product_content" style="margin:100px 0px">
+        echo '<section id="product_content" style="margin:100px 0px 0px 0px">
         <div class="container" style="margin:0px auto; max-width:800px"><h3 class="text-success">Reviews</h3>';
         foreach ($comments as $comment) {
             /*
@@ -355,29 +362,35 @@ function getMarketProductDetail()
             } else {
                 $caltime = "Less than 1 minute";
             }
+
             echo '
           <div class="review-block">
   					<div class="row">
   						<div class="col-sm-3">
-  							<img src="https://bootdey.com/img/Content/user_3.jpg" class="img-rounded">
-  							<div class="review-block-name"><a href="#">'.$comment['first_name'].'&nbsp;'.$comment['last_name'].'</a></div>
-  							<div class="review-block-date">'.$caltime.'</div>
+  							<img src="https://image.flaticon.com/icons/svg/163/163841.svg" style="width: 100px; height: 100px; margin:0px auto; display:block;" class="img-rounded">
+  							<div class="review-block-name"><p style="font-size:15px; font-family:Arimo, sans-serif; text-align: center;">'.$comment['first_name'].'&nbsp;'.$comment['last_name'].'</p></div>
+  							<div class="review-block-date" style="text-align: center;">'.$caltime.'</div>
   						</div>
   						<div class="col-sm-9">
-                <div class="rating">
-                  <span class="glyphicon glyphicon-star"></span>
-                  <span class="glyphicon glyphicon-star"></span>
-                  <span class="glyphicon glyphicon-star"></span>
-                  <span class="glyphicon glyphicon-star"></span>
-                  <span class="glyphicon glyphicon-star-empty"></span>
-                </div>
+              <div class="rating">
+              ';
+            for ($i = 0; $i < 5; $i++) {
+                if ($i < floor($comment['rate'])) {
+                    echo '<span class="glyphicon glyphicon-star"></span>';
+                } else {
+                    echo '<span class="glyphicon glyphicon-star-empty"></span>';
+                }
+            }
 
-  							<div class="review-block-title">this was nice in buy</div>
-  							<div class="review-block-description">'.$comment['comment'].'</div>
+            echo '
+              </div>
+                <br>
+  							<div class="review-block-title">'.$comment['comment'].'</div>
   						</div>
-  					</div>';
+  					</div>
+          </div>';
         }
-        echo '</div></section>';
+        echo '</section>';
     }
 }
 

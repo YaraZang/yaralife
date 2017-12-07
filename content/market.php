@@ -1,23 +1,4 @@
-<!--
-<main role="main">
-  <div class="album text-muted">
-    <div class="container">
 
-      <div class="row">
-
-        <div class="col-sm-9 blog-main">
-
-          <?php
-           //getMarket();
-           ?>
-       </div>
-      </div>
-
-    </div>
-  </div>
-
-</main>
--->
 
 <main role="main">
   <div class="album text-muted">
