@@ -16,20 +16,8 @@
              <?php
               getRecent();
              ?>
-             <!--
-             <li><a href="https://getbootstrap.com/docs/4.0/examples/blog/#">March 2014</a></li>
-             <li><a href="https://getbootstrap.com/docs/4.0/examples/blog/#">February 2014</a></li>
-             <li><a href="https://getbootstrap.com/docs/4.0/examples/blog/#">January 2014</a></li>
-             <li><a href="https://getbootstrap.com/docs/4.0/examples/blog/#">December 2013</a></li>
-             <li><a href="https://getbootstrap.com/docs/4.0/examples/blog/#">November 2013</a></li>
-             <li><a href="https://getbootstrap.com/docs/4.0/examples/blog/#">October 2013</a></li>
-             <li><a href="https://getbootstrap.com/docs/4.0/examples/blog/#">September 2013</a></li>
-             <li><a href="https://getbootstrap.com/docs/4.0/examples/blog/#">August 2013</a></li>
-             <li><a href="https://getbootstrap.com/docs/4.0/examples/blog/#">July 2013</a></li>
-             <li><a href="https://getbootstrap.com/docs/4.0/examples/blog/#">June 2013</a></li>
-             <li><a href="https://getbootstrap.com/docs/4.0/examples/blog/#">May 2013</a></li>
-             <li><a href="https://getbootstrap.com/docs/4.0/examples/blog/#">April 2013</a></li>
-           -->
+
+        
            </ol>
          </div>
        </aside>

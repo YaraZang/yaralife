@@ -1,15 +1,18 @@
 <?php
+# other company users' info
 $url = 'http://seriousbay.com/database_query.php';
 $ch = curl_init();
 $timeout = 5;
 curl_setopt($ch, CURLOPT_URL, $url);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+#curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
-$data = curl_exec($ch);
+curl_exec($ch);
+#$data = curl_exec($ch);
 curl_close($ch);
-echo $data;
+#echo $data;
 
-include('./content/users_dbh.php');
+# my company users' info
+include('./content/dbh.php');
 $sql = 'SELECT * from users';
 $result = mysqli_query($conn, $sql);
 if (mysqli_num_rows($result) > 0) {

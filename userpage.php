@@ -1,5 +1,5 @@
 <?php
-include('./content/users_dbh.php');
+include('./content/dbh.php');
 $sql = 'SELECT * from users';
 $result = mysqli_query($conn, $sql);
 if (mysqli_num_rows($result) > 0) {

@@ -159,7 +159,7 @@ function getuserlist()
     }
     $keyword = $_GET['keyword'];
     // according to key word , query db
-    include('./content/users_dbh.php');
+    include('./content/dbh.php');
     //$repl = '<span style="font-weight: bold; color: red">' . $keyword . '</span>';
 
     $sql = 'SELECT * from users where uid like "%' . $keyword .'%" or first_name like "%'.$keyword.'%" or last_name like "%'.$keyword.'%" or email like "%'.$keyword.'%" or home_phone like "%'.$keyword.'%" or cell_phone like "%'.$keyword.'%"';
@@ -182,6 +182,201 @@ function getuserlist()
     }
 }
 
+function getMarket()
+{
+    $topNum = isset($_GET['top']) ? (int)$_GET['top'] : 0;
+    $companies = getCompanies();
+    foreach ($companies as $company) {
+        /*
+          echo $company['company_id'];
+          echo $company['name'];
+          echo $company['description'];
+          echo $company['owner'];
+          echo $company['site'];
+        */
+        echo '<div class="container">Company: <a herf="http://yara.life">'.$company['name'].'</a></div>';
+
+        $products = $topNum ? getMostRatedEachCompany($topNum, $company['company_id']):getProductsByCompanyID($company['company_id']);
+        foreach ($products as $product) {
+            /*
+              echo $product['name'];
+              echo $product['src'];
+              echo $product['alt'];
+              echo $product['price'];
+              echo $product['rate'];
+            */
+            $rate = number_format($product['rate'], 1);
+            echo '<div class="card" style="width: 16rem;">
+                <a href="'.config('root').'index.php?page=market_detail&product='.$product['product_id'].'">
+                <img class="card-img-top" src='.$product['src'].' alt='.$product['alt'].'>
+                </a>
+                <div class="card-body">
+                <h5 class="card-title">'.$product['name'].'</h5>
+
+                <p class="card-text">Rating:'."$rate".'</p>
+                <div class="rating">
+                ';
+            for ($i = 0; $i < 5; $i++) {
+                if ($i < floor($product['rate'])) {
+                    echo '<span class="glyphicon glyphicon-star"></span>';
+                } else {
+                    echo '<span class="glyphicon glyphicon-star-empty"></span>';
+                }
+            }
+
+            echo '
+                </div>
+                <h5>'.$product['price'].'</h5>
+                <a href="#" class="btn btn-primary">Add to Cart</a>
+              </div>
+            </div></a>';
+            //etc
+        }
+    }
+}
+
+function getTopRated()
+{
+    $products = getMostRatedInMarket(5);
+    foreach ($products as $product) {
+        /*
+          echo $product['name'];
+          echo $product['src'];
+          echo $product['alt'];
+          echo $product['price'];
+          echo $product['rate'];
+        */
+        $rate = number_format($product['rate'], 1);
+        echo '<div class="card" style="width: 16rem;">
+          <a href="'.config('root').'index.php?page=market_detail&product='.$product['product_id'].'">
+          <img class="card-img-top" src='.$product['src'].' alt='.$product['alt'].'>
+          </a>
+          <div class="card-body">
+          <h5 class="card-title">'.$product['name'].'</h5>
+
+          <p class="card-text">Rating:'. "$rate" .'</p>
+          <div class="rating">
+          ';
+        for ($i = 0; $i < 5; $i++) {
+            if ($i < floor($product['rate'])) {
+                echo '<span class="glyphicon glyphicon-star"></span>';
+            } else {
+                echo '<span class="glyphicon glyphicon-star-empty"></span>';
+            }
+        }
+
+        echo '
+          </div>
+          <h5>'.$product['price'].'</h5>
+          <a href="#" class="btn btn-primary">Add to Cart</a>
+        </div>
+      </div></a>';
+        //etc
+    }
+}
+
+
+
+
+
+
+
+function getMarketProductDetail()
+{
+    if (!isset($_GET['product'])) {
+        return;
+    }
+    $productID = (int)$_GET['product'];
+    $product = getProductInfo($productID);
+    if ($product) {
+        $item = $product[0];
+        echo '
+                <div class="container" style="width: 200%">
+                <div class="row">
+                <div class="col-sm-8">
+                  <img class="rounded featurette-image img-fluid mx-auto" data-src="holder.js/500x500/auto" alt="500x500" src="'.config('root').$item["src"].'" data-holder-rendered="true" style="width: 450px; height: 450px;">
+                </div>
+                <div class="col-sm-4">
+                <p class="lead">'.$item["name"].'<br>'.$item["company_id"].'</p>
+                <h1 class="featurette-heading">'.$item["description"].'</h1><br><span class="text-muted">
+                <h4>Your Price&emsp;&emsp;&emsp;'.$item["price"].'</h4></span>
+                <div class="rating">
+                ';
+        for ($i = 0; $i < 5; $i++) {
+            if ($i < floor($item['rate'])) {
+                echo '<span class="glyphicon glyphicon-star"></span>';
+            } else {
+                echo '<span class="glyphicon glyphicon-star-empty"></span>';
+            }
+        }
+
+        echo '
+                </div>
+                </div>
+              </div>
+              </div>';
+    }
+
+
+    $comments = getCommentListByProductID($productID);
+    if ($comments) {
+        echo '<section id="product_content" style="margin:100px 0px">
+        <div class="container" style="margin:0px auto; max-width:800px"><h3 class="text-success">Reviews</h3>';
+        foreach ($comments as $comment) {
+            /*
+              echo $comment['first_name'];
+              echo $comment['last_name'];
+              echo $comment['timestamp'];
+              echo $comment['rate'];
+              echo $comment['comment'];
+            */
+            $seconds_ago = (time() - strtotime($comment['timestamp']));
+            if ($seconds_ago >= 31536000) {
+                $caltime = intval($seconds_ago / 31536000) . " years ago";
+            } elseif ($seconds_ago >= 2419200) {
+                $caltime = intval($seconds_ago / 2419200) . " months ago";
+            } elseif ($seconds_ago >= 86400) {
+                $caltime = intval($seconds_ago / 86400) . " days ago";
+            } elseif ($seconds_ago >= 3600) {
+                $caltime = intval($seconds_ago / 3600) . " hours ago";
+            } elseif ($seconds_ago >= 60) {
+                $caltime = intval($seconds_ago / 60) . " minutes ago";
+            } else {
+                $caltime = "Less than 1 minute";
+            }
+            echo '
+          <div class="review-block">
+  					<div class="row">
+  						<div class="col-sm-3">
+  							<img src="https://bootdey.com/img/Content/user_3.jpg" class="img-rounded">
+  							<div class="review-block-name"><a href="#">'.$comment['first_name'].'&nbsp;'.$comment['last_name'].'</a></div>
+  							<div class="review-block-date">'.$comment['timestamp'].'<br/>'.$caltime.'</div>
+  						</div>
+  						<div class="col-sm-9">
+                <div class="rating">
+                  <span class="glyphicon glyphicon-star"></span>
+                  <span class="glyphicon glyphicon-star"></span>
+                  <span class="glyphicon glyphicon-star"></span>
+                  <span class="glyphicon glyphicon-star"></span>
+                  <span class="glyphicon glyphicon-star-empty"></span>
+                </div>
+
+  							<div class="review-block-title">this was nice in buy</div>
+  							<div class="review-block-description">'.$comment['comment'].'</div>
+  						</div>
+  					</div>';
+        }
+        echo '</div></section>';
+    }
+}
+
+/*
+<div class="rating">
+                            <span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star">
+                            </span><span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star">
+                            </span><span class="glyphicon glyphicon-star-empty"></span>
+                        </div>
+*/
 /**
  * Starts everything and displays the template.
  */

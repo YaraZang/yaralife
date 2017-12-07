@@ -1,6 +1,6 @@
 
 <?php
-include('../content/users_dbh.php');
+include('../content/dbh.php');
 if (isset($_POST['submit'])
     && !empty($_POST['uid'])
     && !empty($_POST['pwd'])) {
@@ -15,7 +15,7 @@ if (isset($_POST['submit'])
         header("Location: ../index.php");
     } else {
         //echo 'fail';
-        
+
         header("Location: login.php");
     }
 

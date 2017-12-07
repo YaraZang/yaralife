@@ -6,7 +6,7 @@
 </head>
 <body>
   <?php
-  include('../content/users_dbh.php');
+  include('../content/dbh.php');
   if (isset($_POST['register'])
       && !empty($_POST['uid'])
       && !empty($_POST['first_name'])
@@ -35,7 +35,6 @@
           header("refresh:3; url=../index.php?page=user&registered=true");
           return;
       }
-
       $sql = "INSERT INTO users (uid, first_name, last_name, email, home_address, home_phone, cell_phone, user_password)   VALUES ('$uid', '$first_name', '$last_name', '$email', '$home_address', '$home_phone', '$cell_phone', '$user_password')";
 
       $result = mysqli_query($conn, $sql);
@@ -47,8 +46,8 @@
           header("refresh:2; url=login.php?registered=true");
           #header("Location: ../index.php");
       } else {
-          //echo 'fail';
-          header("Location: register.php");
+          echo 'fail';
+          header("refresh:3; url=../index.php?page=user&registered=true");
       }
   }
   ?>
