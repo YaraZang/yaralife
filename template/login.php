@@ -42,9 +42,9 @@ if (isset($_SESSION['username'])) {
       <label for="inputPassword" class="sr-only">Password</label>
       <input type="password" name="pwd" class="form-control" placeholder="Password" required="">
       <button class="btn btn-lg btn-primary btn-block" type="submit" name="submit">Sign in</button>
-      <!--
+      
       Not yet a menber? <a href="register.php">Register</a>
-    -->
+    
     </form>
 
   </div>
