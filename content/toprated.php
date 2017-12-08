@@ -1,6 +1,7 @@
 <main role="main">
   <div class="album text-muted">
     <div class="container">
+      <span style="font-size:50px;">TOP 5</span>
 
       <div class="row">
 
@@ -9,7 +10,7 @@
            getTopRated();
            ?>
        </div>
-      
+
       </div>
 
     </div>

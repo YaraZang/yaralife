@@ -1,5 +1,5 @@
 <main role="main">
-  <div class="album text-muted">
+  <div class="album text-muted" style="background-color:#fff;">
     <div class="container">
 
       <div class="row">
@@ -17,7 +17,7 @@
               getRecent();
              ?>
 
-        
+
            </ol>
          </div>
        </aside>

@@ -1,4 +1,4 @@
-<main role="main" class="container">
+<main role="main" class="container" style="background-color:#fff;">
 
   <div class="row">
 

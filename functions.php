@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Displays site name.
  */
@@ -31,7 +30,7 @@ function navMenu()
     foreach (config('nav_menu') as $uri => $name) {
         $active = ($page == $uri) ? 'active':'';
         $nav_menu .= '<li class="nav-item '. $active .'">
-                        <a class="nav-link" href="'.config('root').'index.php'. ($uri == '' ? '' : '?page=') .$uri.'" >'.$name."&nbsp".'</a>
+                        <a class="nav-link" href="'.config('root').'index.php'. ($uri == '' ? '' : '?page=') .$uri.'" style="font-size:20px;">'.$name.'</a>
                       </li>';
     }
 
@@ -93,7 +92,7 @@ function getProducts()
     $products = $products["products"];
     foreach ($products as $name => $detail) {
         echo '<a class="card" href="'.config('root').'index.php?page=detail&product='.$name.'">
-                <img src="' .config('root').$detail["src"]. '" alt="'.$detail["alt"].'" style="height: 220px; width: 100%; display: block;"  data-holder-rendered="true">
+                <img class="rounded" src="' .config('root').$detail["src"]. '" alt="'.$detail["alt"].'" style="height: 220px; width: 100%; display: block;"  data-holder-rendered="true">
                 <p class="card-text text-center">'.$detail["description"].'</p>
               </a>';
     }
@@ -106,13 +105,6 @@ function getProductDetail()
     $products = json_decode($string, true);
     $products = $products["products"];
     $item = $products[$product];
-    echo '  <div class="col-md-6 order-md-2">
-            <h1 class="featurette-heading">'.$item["description"].'</h1><br><span class="text-muted"><h4>Your Price&emsp;&emsp;&emsp;'.$item["price"].'</h4></span>
-            <p class="lead">'.$item["chef"].'<br>'.$item["feature"].'</p>
-            </div>
-            <div class="col-md-6 order-md-1">
-              <img class="featurette-image img-fluid mx-auto" data-src="holder.js/500x500/auto" alt="500x500" src="'.config('root').$item["src"].'" data-holder-rendered="true" style="width: 500px; height: 500px;">
-            </div>';
 
     // set cookie to record user recent visited products
     $info = array();
@@ -132,6 +124,14 @@ function getProductDetail()
         array_unshift($info, $product);
     }
     setcookie('recent_visit', serialize($info), time()+3600);
+
+    echo '<div class="col-sm-5 offset-sm-1">
+            <h1 class="featurette-heading">'.$item["description"].'</h1><br><span class="text-muted"><h4>Your Price&emsp;&emsp;&emsp;'.$item["price"].'</h4></span>
+            <p class="lead">'.$item["chef"].'<br>'.$item["feature"].'</p>
+            </div>
+            <div class="col-sm-5">
+              <img class="featurette-image img-fluid mx-auto rounded" data-src="holder.js/500x500/auto" alt="500x500" src="'.config('root').$item["src"].'" data-holder-rendered="true" style="width: 500px; height: 500px;">
+            </div>';
 }
 
 function getRecent()
@@ -194,9 +194,13 @@ function getMarket()
           echo $company['owner'];
           echo $company['site'];
         */
-        echo '<div class="container">Company: <a herf="http://yara.life">'.$company['name'].'</a></div>';
+        echo '<div class="container" style="font-size:30px;">Company: <a herf="#">'.$company['name'].'</a></div>';
 
         $products = $topNum ? getMostRatedEachCompany($topNum, $company['company_id']):getProductsByCompanyID($company['company_id']);
+        if (!$products) {
+            return;
+        }
+        echo '<div class="row">';
         foreach ($products as $product) {
             /*
               echo $product['name'];
@@ -208,10 +212,10 @@ function getMarket()
             $rate = number_format($product['rate'], 1);
             echo '<div class="card" style="width: 16rem;">
                 <a href="'.config('root').'index.php?page=market_detail&product='.$product['product_id'].'">
-                <img style="height: 220px; width: 100%; display: block;" class="card-img-top" src='.$product['src'].' alt='.$product['alt'].'>
+                <img style="height: 220px; width: 100%; display: block;" class="card-img-top rounded" src='.'img/'.$product['company_id'].'/'.$product['src'].' alt='.$product['alt'].'>
                 </a>
                 <div class="card-body">
-                <h6 class="card-title">'.$product['name'].'</h6>
+                <h6 class="card-title" style="height: 30px;">'.$product['name'].'</h6>
 
                 <p class="card-text">Rating:'."$rate".'</p>
                 <div class="rating">
@@ -226,13 +230,33 @@ function getMarket()
 
             echo '
                 </div>
-                <h5 style="color:red;">'.$product['price'].'</h5>
-                <a href="#" class="btn btn-primary">Add to Cart</a>
+                <h5 style="color:red;">$ '.$product['price'].'</h5>
+                ';
+            getAddToCartBtn($product);
+            echo '
               </div>
-            </div></a>';
+            </div>
+            ';
             //etc
         }
+        echo '</div>';
     }
+}
+
+function getAddToCartBtn($product)
+{
+    echo '
+  <button
+      class="snipcart-add-item btn btn-primary"
+      data-item-id="'.$product['product_id'].'"
+      data-item-name="'.$product['name'].'"
+      data-item-price="'.$product['price'].'"
+      data-item-weight="20"
+      data-item-url="http://'.config('url').config('root').'index.php?page=market_detail&product='.$product['product_id'].'"
+      data-item-description="'.$product['description'].'">
+      Add to Cart
+  </button>
+  ';
 }
 
 function getTopRated()
@@ -249,10 +273,10 @@ function getTopRated()
         $rate = number_format($product['rate'], 1);
         echo '<div class="card" style="width: 16rem;">
           <a href="'.config('root').'index.php?page=market_detail&product='.$product['product_id'].'">
-          <img class="card-img-top" src='.$product['src'].' alt='.$product['alt'].'>
+          <img style="height: 220px; width: 100%; display: block;" class="card-img-top" src='.'img/'.$product['company_id'].'/'.$product['src'].' alt='.$product['alt'].'>
           </a>
           <div class="card-body">
-          <h5 class="card-title">'.$product['name'].'</h5>
+          <h5 class="card-title" style="height: 30px;">'.$product['name'].'</h5>
 
           <p class="card-text">Rating:'. "$rate" .'</p>
           <div class="rating">
@@ -267,7 +291,7 @@ function getTopRated()
 
         echo '
           </div>
-          <h5>'.$product['price'].'</h5>
+          <h5 style="color:red;">$ '.$product['price'].'</h5>
           <a href="#" class="btn btn-primary">Add to Cart</a>
         </div>
       </div></a>';
@@ -294,14 +318,15 @@ function getMarketProductDetail()
         echo '
               <div class="row">
                 <div class="col-sm-5 offset-sm-2">
-                  <img class="img-thumbnail rounded featurette-image img-fluid mx-auto" data-src="holder.js/500x500/auto" alt="500x500" src="'.config('root').$item["src"].'" data-holder-rendered="true" style="width: 450px; height: 450px; margin:0px auto; display:block;">
+                  <img class="img-thumbnail rounded featurette-image img-fluid mx-auto" data-src="holder.js/500x500/auto" alt="500x500" src="'.config('root').'img/'.$item['company_id'].'/'.$item["src"].'" data-holder-rendered="true" style="width: 450px; height: 450px; margin:0px auto; display:block;">
                 </div>
                 <div class="col-sm-5" style="margin:20px auto;">
                 <div class="col-sm-6" style="text-align: center;">
-                <p class="lead" style="color:black; font-size:50px; font-family:Arimo, sans-serif;">'.$item["name"].'</p>
+                <p class="lead" style="color:black; font-size:30px; font-family:Roboto, sans-serif;">'.$item["name"].'</p>
                 <p style="font-size:20px; font-family:Spectral SC, sans-serif;">Company: '.$item["company_id"].'</p>
 
-                <span class="text-muted" style="font-size:30px;">Your Price:&nbsp;<span style="color:red;">'.$item["price"].'</span></span>
+                <span class="text-muted" style="font-size:30px;">Your Price:&nbsp;<span style="color:red;">$
+                '.$item["price"].'</span></span>
                 <span>Rating: '."$rate".'</span>
                 <div class="rating">
                 ';
@@ -316,7 +341,10 @@ function getMarketProductDetail()
         echo '
                 </div>
                 <br>
-                <button type="submit" style="float: center; margin: 100px auto;" name="commentsubmit" class="btn btn-primary">Add to Cart</button>
+                ';
+
+        getAddToCartBtn($item);
+        echo '
                 </div>
 
                 </div>

@@ -4,7 +4,7 @@ if (@$_GET['registered'] == 'true') {
 }
 ?>
 <main role="main">
-  <div class="row">
+  <div class="row" style="background-color:#fff;">
 
     <div class="col-md-1"></div>
 

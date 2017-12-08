@@ -1,5 +1,5 @@
 <main role="main" class="container">
-  <div class="row">
+  <div class="row" style="background-color:#fff;">
     <?php
     //include("./data/contacts.txt");
       getContacts();

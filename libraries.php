@@ -68,14 +68,14 @@ function getMostRatedEachCompany($num, $companyID)
                   alt,
                   price,
                   rate,
-          @student:=CASE WHEN @class <> company_id THEN 0 ELSE @student+1 END AS rank,
-          @class:=company_id AS bkt
+          @rank:=CASE WHEN @group <> company_id THEN 0 ELSE @rank+1 END AS rank,
+          @group:=company_id AS bkt
        FROM
-         (SELECT @student:= -1) s,
-         (SELECT @class:= -1) c,
+         (SELECT @rank:= -1) s,
+         (SELECT @group:= -1) c,
          (SELECT *
           FROM
-              (SELECT product_id,
+              (SELECT   product_id,
                          company_id,
                          name,
                          description,
@@ -84,11 +84,13 @@ function getMostRatedEachCompany($num, $companyID)
                          price,
                          IFNULL((SELECT AVG(comment.rate) from comment where comment.product_id = product.product_id),0) as rate
                  FROM product)  r
-            ORDER BY company_id, rate DESC
            ) t
+           ORDER BY t.company_id, t.rate DESC
            ) d
            where d.rank < '."$num".'
-           and d.company_id = '."$companyID";
+           and d.company_id = '."$companyID".'
+           order by d.rate DESC
+           ';
     return _getDBResult($statement);
 }
 
@@ -96,7 +98,8 @@ function getMostRatedInMarket($num)
 {
     $statement = '
     select a.name as name,
-          a.product_id as product_id,
+           a.product_id as product_id,
+           a.company_id as company_id,
            c.name as company_name,
            a.description as description,
                     a.src as src,
